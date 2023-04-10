@@ -3,6 +3,7 @@ use aya::{include_bytes_aligned, Bpf};
 use aya_log::BpfLogger;
 use clap::Parser;
 use log::{info, warn};
+use std::env;
 use tokio::signal;
 
 #[derive(Debug, Parser)]
@@ -21,6 +22,7 @@ async fn main() -> Result<(), anyhow::Error> {
     // runtime. This approach is recommended for most real-world use cases. If you would
     // like to specify the eBPF program at runtime rather than at compile-time, you can
     // reach for `Bpf::load_file` instead.
+
     #[cfg(debug_assertions)]
     let mut bpf = Bpf::load(include_bytes_aligned!(
         "../../target/bpfel-unknown-none/debug/uprobetest"
@@ -35,7 +37,10 @@ async fn main() -> Result<(), anyhow::Error> {
     }
     let program: &mut UProbe = bpf.program_mut("uprobetest").unwrap().try_into()?;
     program.load()?;
-    program.attach(Some("main"), 0, "hello", opt.pid)?;
+
+    let target = env::current_dir().unwrap().join("samples/hello/hello");
+
+    program.attach(Some("main"), 0, target, opt.pid)?;
 
     info!("Waiting for Ctrl-C...");
     signal::ctrl_c().await?;
