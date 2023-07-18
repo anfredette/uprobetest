@@ -2,5 +2,6 @@
 members = ["uprobetest", "uprobetest-common", "xtask"]
 
 [patch.crates-io]
-aya = { git = "https://github.com/aya-rs/aya", branch="main" }
-aya-log = { git = "https://github.com/aya-rs/aya", branch="main" }
+aya = { git = "https://github.com/bpfd-dev/aya", branch="main" }
+aya-log = { git = "https://github.com/bpfd-dev/aya", branch="main" }
+
